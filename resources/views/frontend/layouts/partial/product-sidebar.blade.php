@@ -1,8 +1,57 @@
 
-<ul class="list-group">
-    <li class="list-group-item">Cras justo odio</li>
-    <li class="list-group-item">Dapibus ac facilisis in</li>
-    <li class="list-group-item">Morbi leo risus</li>
-    <li class="list-group-item">Porta ac consectetur ac</li>
-    <li class="list-group-item">Vestibulum at eros</li>
-</ul>
+
+
+<div class="list-group">
+
+
+
+    @foreach(App\Category::orderBy('name','asc')->where('parent_id', Null)->get() as $parent)
+        <a href="#main-{{$parent->id}}" class="list-group-item list-group-item-action" data-toggle="collapse">
+
+            <img src="{{asset('images/categories/'.$parent->image)}}" width="50">
+            {{$parent->name}}
+        </a>
+
+        <div class="collapse
+
+      @if(Route::is('categories.show'))
+
+        @if(App\Category::ParentorNOtCategory($parent->id, $category->id))
+                show
+                 @endif
+
+
+        @endif
+
+
+                " id="main-{{$parent->id}}">
+            <div class="child-rows">
+
+                @foreach(App\Category::orderBy('name','asc')->where('parent_id', $parent->id)->get() as $child)
+                    <a href="{!! route('categories.show',$child->id)!!}" class="list-group-item list-group-item-action
+
+                @if(Route::is('categories.show'))
+                    @if($child->id==$category->id)
+                            active
+                            @endif
+
+                    @endif
+                            " >
+                        <img src="{{asset('images/categories/'.$child->image)}}" width="30">
+                        {{$child->name}}</a>
+                @endforeach
+            </div>
+
+        </div>
+
+
+    @endforeach
+
+</div>
+
+
+
+
+
+
+

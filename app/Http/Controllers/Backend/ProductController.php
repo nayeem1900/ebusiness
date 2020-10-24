@@ -6,114 +6,121 @@ use App\Http\Controllers\Controller;
 use App\Product;
 use App\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Image;
-
+use File;
 class ProductController extends Controller
 {
 
-
-    public function view()
+    public function index()
     {
-    $data['allData']=Product::orderBy('id','desc')->get();
+        $products=Product::orderBy('id','desc')->get();
 
-        return view('backend.product.product-view',$data);
+        return view('backend.product.index')->with('products',$products);
     }
 
-    public function add()
+
+    public function create()
     {
 
-        return view('backend.product.product-add');
+        return view('backend.product.create');
+    }
+
+
+    public function edit($id)
+    {
+
+        $product=Product::find($id);
+
+        return view('backend.product.edit')->with('product',$product);
     }
 
 
     public function store(Request $request)
     {
-         $request->validate([
-            'product_image' => 'required',
+
+        //validation
+
+        $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required',
+            'price' => 'required|numeric',
+            'quantity' => 'required|numeric',
+            'brand_id' => 'required|numeric',
+            'category_id' => 'required|numeric',
 
         ]);
 
 
-        $data = new Product();
-        $data->title = $request->title;
-        $data->description = $request->description;
-        $data->price = $request->price;
-        $data->quantity = $request->quantity;
+        $product = new Product();
+        $product->title = $request->title;
+        $product->description = $request->description;
+        $product->quantity = $request->quantity;
+        $product->price = $request->price;
 
 
-        $data->slug = ($request->title);
-        $data->category_id = 1;
-        $data->brand_id = 1;
-        $data->admin_id = 1;
+        $product->slug = ($request->title);
+        $product->admin_id = 1;
+        $product->brand_id = $request->brand_id;
+        $product->category_id = $request->category_id;
+        $product->save();
 
-        $data->save();
-        //add Single image
-
-        /*  if ($request->hasFile('product_image')) {
-
-
-              $image = $request->file('product_image');
-
-              $img = time() . '.' . $image->getClientOriginalExtension();
-              $location = public_path('images/products/' . $img);
-              Image::make($image)->save($location);
-              $product_image = new ProductImage;
-              $product_image->product_id = $data->id;
-              $product_image->image = $img;
-              $product_image->save();
-          }
-          */
-
-        //Add Multiple Image
-        if (count($request->product_image) > 0) {
+        if (count($request->product_image)>0) {
             foreach ($request->product_image as $image) {
 
                 $img = time() . '.' . $image->getClientOriginalExtension();
-                $location = public_path('images/products/' . $img);
-
+                $location = public_path('images/products/' .$img);
                 Image::make($image)->save($location);
                 $product_image = new ProductImage;
-                $product_image->product_id = $data->id;
+                $product_image->product_id = $product->id;
                 $product_image->image = $img;
                 $product_image->save();
 
             }
+            session()->flash('success','A new category added success');
 
-
-            return redirect()->route('product.view');
-
+            return redirect()->route('product.index');
         }
 
     }
 
-    public function edit($id){
-
-        $data['editData']=Product::find($id);
-
-        return view('backend.product.product-add',$data);
 
 
-    }
 
-    public function update(Request $request,$id){
+    public function update(Request $request,$id)
+    {
 
-        $data = new Product();
-        $data->title = $request->title;
-        $data->description = $request->description;
-        $data->price = $request->price;
-        $data->quantity = $request->quantity;
+        //validation
 
+        $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required',
+            'price' => 'required|numeric',
+            'quantity' => 'required|numeric',
+            'brand_id' => 'required|numeric',
+            'category_id' => 'required|numeric',
 
-        $data->slug = ($request->title);
-        $data->category_id = 1;
-        $data->brand_id = 1;
-        $data->admin_id = 1;
-
-        $data->save();
-        return redirect()->route('product.view');
+        ]);
 
 
-    }
+        $product =  Product::find($id);
+        $product->title = $request->title;
+        $product->description = $request->description;
+        $product->quantity = $request->quantity;
+        $product->price = $request->price;
+
+        $product->admin_id = 1;
+        $product->brand_id = $request->brand_id;
+        $product->category_id = $request->category_id;
+        $product->save();
+
+            session()->flash('success','A new category added success');
+
+            return redirect()->route('product.index');
+        }
+
+
+
 
     public function delete($id)
     {

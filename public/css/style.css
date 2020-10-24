@@ -1,4 +1,32 @@
 
+
+/**product CSS ***/
+
+.product-item{
+
+    background: #82ccde;
+}
+.child-rows{
+    padding-left: 20px;
+    border-left:1px solid #dfdfdf;
+    background: #fff;
+}
+.child-rows a.list-group-item{
+    border-left: 0px!important;
+}
+
+
+.list-group-item.active{
+    z-index: 2;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #02aadd;
+    border-radius: 0px!important;
+}
+/** End product CSS ***/
+
+
+
 .bg-light{
 
     background: #01b5e2!important;;

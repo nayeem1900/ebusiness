@@ -83,6 +83,43 @@
 
 
                                        </div>
+
+
+
+                                       <div class="form-group">
+                                           <label for="exampleInputEmail1">Select Category</label>
+                                           <select class="form-control" name="category_id">
+                                               <option value="">Please select a category for this Product</option>
+                                               @foreach(App\Category::orderBy('name','asc')->where('parent_id', Null)->get() as $parent)
+                                                   <option value="{{$parent->id}}">{{$parent->name}}</option>
+
+                                                   @foreach(App\Category::orderBy('name','asc')->where('parent_id', $parent->id)->get() as $child)
+                                                       <option value="{{$child->id}}">-------->{{$child->name}}</option>
+                                                   @endforeach
+
+
+                                               @endforeach
+
+                                           </select>
+                                       </div>
+
+                                       <div class="form-group">
+                                           <label for="exampleInputEmail1">Select Brand</label>
+                                           <select class="form-control" name="brand_id">
+                                               <option value="">Please select a brand for thr Product</option>
+                                               @foreach(App\Brand::orderBy('name','asc')->get() as $brand)
+                                                   <option value="{{$brand->id}}">{{$brand->name}}</option>
+
+
+
+                                               @endforeach
+
+                                           </select>
+                                       </div>
+
+
+
+
                                        <div class="row">
 
                                                <div class="form-group col-md-4 ">

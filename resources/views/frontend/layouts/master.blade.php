@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ecommerce</title>
+    <title>
+        @yield('title', 'Ecommerce')
+    </title>
     @include('frontend.layouts.partial.style')
 </head>
 <body>
